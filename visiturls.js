@@ -10,27 +10,16 @@ var url = require("url");
 var urlvisited = [],urlall=[],urlout=[];
 
 function visiturls(rooturl) {
+    //将根节点转化为name和link的形式,后续爬到得URL都以此种形式保存
     var rurl = {
         linkname: "rootweb",
         linkaddress: rooturl
     };
-    /*    function onecallback(urlnew){
-     console.log("new new "+urlnew.length);
-     q.push(urlnew,onecallback);
-     for(var i=0;i<urlnew.length;i++){
-     urlvisited.push(urlnew[i]);
-     }
-     }*/
+
 
     var q = async.queue(function (task, callback) {
         /*var urlnew=[];*/
         fetchurl(task, rooturl, q);
-
-        /*callback(urlnew);*/
-        /*q.push(urlnew);
-         for(var i=0;i<urlnew.length;i++){
-         urlvisited.push(urlnew[i]);
-         }*/
 
     }, 100);
 
@@ -38,42 +27,8 @@ function visiturls(rooturl) {
     urlvisited.push(rurl);
 
     q.drain = function () {
-        /*console.log("urlall length is " + urlall.length);
-        for (var i = 0; i < urlall.length; i++) {
-            console.log(urlall[i].linkname + " " + urlall[i].linkaddress)
-        }
-        console.log("urlvisited length is " + urlvisited.length);
-        for (var i = 0; i < urlvisited.length; i++) {
-            console.log(urlvisited[i].linkname + " " + urlvisited[i].linkaddress)
-        }*/
-        /*console.log("urlout length is " + urlout.length);*/
-        /*for (var i = 0; i < urlout.length; i++) {
-            console.log(urlout[i].linkname + " " + urlout[i].linkaddress)
-        }*/
-
 
     }
-    /*    q.empty=function(){
-     for(var i=0;i<urlvisited.length;i++){
-     console.log("empty "+urlvisited[i].linkname+" "+urlvisited[i].linkaddress)
-     }
-     }*/
-
-
-    /*        async.eachLimit(urlwait,5,function(url,callback){
-     fetchurl(url,rooturl);
-
-     },function(error){
-     if(error){
-     console.log("visiturl error");
-     }
-     else{
-
-     console.log("one circle just finished");
-     }
-
-     })*/
-
 
 }
 
@@ -121,16 +76,9 @@ function fetchurl(oneurl, rooturl, q) {
                 })
 
 
-                /* console.log("origin count "+originurls.length);
-                 for(var one in originurls){
-                 console.log(originurls[one].linkaddress);
-                 }*/
+                //检测抓取到得URL里面是否有重复的URL,若有,则去重
                 norepeaturl(originurls);
-                /*console.log("origin2 count "+originurls.length);
-
-                 for(var one in originurls){
-                 console.log(originurls[one].linkaddress);
-                 }*/
+                //检测去重后的URL是否已经存在了
                 isnewurl(originurls, urlnew);
 
                 for (var i = 0; i < urlnew.length; i++) {
@@ -171,7 +119,7 @@ function norepeaturl(urls) {
     }
 }
 
-//判断是否已存在于抓过的URL列表和等待抓取的URL列表,若是,则不加入newurl列表;若之前没有此url,则加入newurl列表
+//判断是否已存在于URL列表,若是,则忽略;若之前没有此url,则加入newurl列表
 function isnewurl(originurls, urlnew) {
     for (var oneurl in originurls) {
         if (!isurlexist(originurls[oneurl], urlall) /*&& (!isurlexist(originurls[oneurl],urlwait))*/) {
@@ -182,7 +130,6 @@ function isnewurl(originurls, urlnew) {
         }
     }
 
-    /*console.log("new url count " + urlnew.length);*/
 
 }
 //判断一个URL是否在一个URL列表中
