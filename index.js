@@ -4,7 +4,7 @@
 
 var visiturls=require("./visiturls");
 
-var rooturl="http://www.skyroam.com.cn/";
+var rooturl="http://rorokuku.info/";
 
 (function Spider(rooturl){
 
